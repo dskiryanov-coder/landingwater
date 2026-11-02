@@ -3,6 +3,7 @@ dist/
 test-results/
 playwright-report/
 .netlify/
+.vercel/
 .env
 .env.*
 !.env.example
