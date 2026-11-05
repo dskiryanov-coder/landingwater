@@ -4,6 +4,18 @@ import { systems } from '../content.js';
 // Автотесты не загружают стороннюю CRM и не создают реальные обращения.
 test.beforeEach(async ({ page }) => {
   await page.route('https://crm-aquadom.ru/**', route => route.abort());
+  await page.route('https://crm-aquadom.ru/upload/crm/form/loader_3_jjh64m.js*', route => route.fulfill({
+    contentType: 'application/javascript',
+    body: `document.querySelectorAll('script[data-b24-form="inline/3/jjh64m"]:not([data-b24-loaded])').forEach(script => {
+      script.dataset.b24Loaded = 'true';
+      const form = document.createElement('form');
+      form.className = 'crm-test-form';
+      const input = document.createElement('input');
+      input.setAttribute('aria-label', 'Имя');
+      form.append(input);
+      script.before(form);
+    });`
+  }));
 });
 
 test('all six solutions show approved equipment prices and open the correct dialog', async ({ page }) => {
@@ -19,6 +31,8 @@ test('all six solutions show approved equipment prices and open the correct dial
     await expect(page.getByRole('dialog')).toBeVisible();
     await expect(page.locator('#dialog-title')).toHaveText(system.name);
     await expect(page.getByRole('dialog').getByLabel('Имя', { exact: true })).toBeVisible();
+    await expect(page.getByRole('dialog').locator('.crm-test-form')).toHaveCount(1);
+    await expect(page.getByRole('dialog').locator('.demo-form')).toHaveCount(0);
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).not.toBeVisible();
     await expect(card.getByRole('button')).toBeFocused();
@@ -27,6 +41,10 @@ test('all six solutions show approved equipment prices and open the correct dial
 });
 
 test('demo forms never submit data or retain values after the dialog closes', async ({ page }) => {
+  await page.route('**/forms-config.js', route => route.fulfill({
+    contentType: 'text/javascript',
+    body: `export const formsConfig = {general: null, uv: null, clarity: null, sorption: null, iron: null, softening: null, complex: null};`
+  }));
   await page.goto('/');
   await page.locator('[data-form="uv"]').click();
   const dialog = page.getByRole('dialog');
@@ -75,18 +93,6 @@ test('modal traps keyboard focus and closes using its close button', async ({ pa
 });
 
 test('general CRM form loads in both page slots and reopens without duplicates', async ({ page }) => {
-  await page.route('https://crm-aquadom.ru/upload/crm/form/loader_3_jjh64m.js*', route => route.fulfill({
-    contentType: 'application/javascript',
-    body: `document.querySelectorAll('script[data-b24-form="inline/3/jjh64m"]:not([data-b24-loaded])').forEach(script => {
-      script.dataset.b24Loaded = 'true';
-      const form = document.createElement('form');
-      form.className = 'crm-test-form';
-      const input = document.createElement('input');
-      input.setAttribute('aria-label', 'Имя в CRM');
-      form.append(input);
-      script.before(form);
-    });`
-  }));
   await page.goto('/');
   await expect(page.locator('#selection .crm-test-form')).toHaveCount(1);
   await expect(page.locator('#contacts .crm-test-form')).toHaveCount(1);
