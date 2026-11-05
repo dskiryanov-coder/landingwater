@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { systems } from '../content.js';
 
+// Автотесты не загружают стороннюю CRM и не создают реальные обращения.
+test.beforeEach(async ({ page }) => {
+  await page.route('https://crm-aquadom.ru/**', route => route.abort());
+});
+
 test('all six solutions show approved equipment prices and open the correct dialog', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -23,7 +28,7 @@ test('all six solutions show approved equipment prices and open the correct dial
 
 test('demo forms never submit data or retain values after the dialog closes', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.hero [data-form]').click();
+  await page.locator('[data-form="uv"]').click();
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Имя', { exact: true }).fill('Тест');
   await dialog.getByLabel('Телефон', { exact: true }).fill('+7 999 123 45 67');
@@ -34,7 +39,7 @@ test('demo forms never submit data or retain values after the dialog closes', as
   expect(requests).toEqual([]);
   expect(await page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length, cookie: document.cookie }))).toEqual({ local: 0, session: 0, cookie: '' });
   await dialog.getByRole('button', { name: 'Закрыть форму' }).click();
-  await page.locator('.hero [data-form]').click();
+  await page.locator('[data-form="uv"]').click();
   await expect(dialog.getByLabel('Телефон', { exact: true })).toHaveValue('');
 });
 
@@ -58,7 +63,7 @@ test('mobile menu, FAQ and layout work at phone, tablet and desktop widths', asy
 
 test('modal traps keyboard focus and closes using its close button', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.hero [data-form]').click();
+  await page.locator('[data-form="uv"]').click();
   const dialog = page.getByRole('dialog');
   for (let i = 0; i < 8; i++) {
     await page.keyboard.press('Tab');
@@ -66,7 +71,32 @@ test('modal traps keyboard focus and closes using its close button', async ({ pa
   }
   await dialog.getByRole('button', { name: 'Закрыть форму' }).click();
   await expect(dialog).not.toBeVisible();
-  await expect(page.locator('.hero [data-form]')).toBeFocused();
+  await expect(page.locator('[data-form="uv"]')).toBeFocused();
+});
+
+test('general CRM form loads in both page slots and reopens without duplicates', async ({ page }) => {
+  await page.route('https://crm-aquadom.ru/upload/crm/form/loader_3_jjh64m.js*', route => route.fulfill({
+    contentType: 'application/javascript',
+    body: `document.querySelectorAll('script[data-b24-form="inline/3/jjh64m"]:not([data-b24-loaded])').forEach(script => {
+      script.dataset.b24Loaded = 'true';
+      const form = document.createElement('form');
+      form.className = 'crm-test-form';
+      const input = document.createElement('input');
+      input.setAttribute('aria-label', 'Имя в CRM');
+      form.append(input);
+      script.before(form);
+    });`
+  }));
+  await page.goto('/');
+  await expect(page.locator('#selection .crm-test-form')).toHaveCount(1);
+  await expect(page.locator('#contacts .crm-test-form')).toHaveCount(1);
+  await page.locator('.hero [data-form]').click();
+  await expect(page.getByRole('dialog').locator('.crm-test-form')).toHaveCount(1);
+  await page.keyboard.press('Escape');
+  await page.locator('.hero [data-form]').click();
+  await expect(page.getByRole('dialog').locator('.crm-test-form')).toHaveCount(1);
+  await expect(page.getByRole('dialog').locator('.demo-form')).toHaveCount(0);
+  expect(await page.locator('script[data-b24-form]').evaluateAll(scripts => new Set(scripts.map(script => script.dataset.b24Id)).size)).toBe(3);
 });
 
 test('configured CRM form keeps a direct link available if its loader fails', async ({ page }) => {

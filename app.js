@@ -24,31 +24,42 @@ for (const [question, answer] of questions) {
 let formSequence = 0;
 const formCleanups = new WeakMap();
 function renderForm(container, key) {
+  const config = formsConfig[key];
+  // Сохраняем уже загруженный опросник при повторном открытии общего окна.
+  if (config && container.dataset.crmForm === key) return;
   formCleanups.get(container)?.();
   container.replaceChildren();
-  const config = formsConfig[key];
+  delete container.dataset.crmForm;
   if (config) {
     // Официальный загрузчик Битрикс24 получает свой script-контекст для каждого размещения.
     // Не сообщаем об успехе сами: результат отправки отображает CRM-форма.
     const mount = document.createElement('div');
     const fallback = document.createElement('p');
     fallback.className = 'form-fallback';
-    const direct = document.createElement('a');
-    const url = new URL(config.url);
     const loaderUrl = new URL(config.loaderUrl);
-    if (url.protocol !== 'https:' || loaderUrl.protocol !== 'https:') throw new Error('Bitrix24 form URLs must use HTTPS');
-    direct.href = url.href;
-    direct.target = '_blank';
-    direct.rel = 'noopener noreferrer';
-    direct.textContent = 'Открыть форму в отдельной вкладке';
-    fallback.append('Если форма не отображается: ', direct);
+    if (loaderUrl.protocol !== 'https:') throw new Error('Bitrix24 form URLs must use HTTPS');
+    if (config.url) {
+      const url = new URL(config.url);
+      if (url.protocol !== 'https:') throw new Error('Bitrix24 form URLs must use HTTPS');
+      const direct = document.createElement('a');
+      direct.href = url.href;
+      direct.target = '_blank';
+      direct.rel = 'noopener noreferrer';
+      direct.textContent = 'Открыть форму в отдельной вкладке';
+      fallback.append('Если форма не отображается: ', direct);
+    } else {
+      fallback.textContent = 'Если форма не отображается, обновите страницу или попробуйте позже.';
+    }
     const script = document.createElement('script');
     script.dataset.b24Form = `inline/${config.id}/${config.code}`;
     script.dataset.skipMoving = 'true';
+    script.dataset.b24Id = `aquadom-${key}-${++formSequence}`;
+    loaderUrl.searchParams.set('v', String(Math.floor(Date.now() / 180000)));
     script.src = loaderUrl.href;
     script.async = true;
     mount.append(script);
     container.append(mount, fallback);
+    container.dataset.crmForm = key;
     formCleanups.set(container, () => mount.remove());
     return;
   }
@@ -98,8 +109,10 @@ dialog.addEventListener('click', event => {
 });
 dialog.addEventListener('close', () => {
   document.body.classList.remove('modal-open');
-  formCleanups.get(dialogForm)?.();
-  dialogForm.replaceChildren();
+  if (!dialogForm.dataset.crmForm) {
+    formCleanups.get(dialogForm)?.();
+    dialogForm.replaceChildren();
+  }
   opener?.focus({ preventScroll: true });
 });
 
