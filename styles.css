@@ -38,4 +38,12 @@ h1,h2,h3,.hero h1,.button,.text-link,.problem-solution,.system-price,.form-title
 @media(max-width:900px){.problems-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.step p{font-size:18px}}
 @media(max-width:480px){.steps-grid{grid-template-columns:1fr}.step h3 br{display:none}.step-number{margin-bottom:14px}}
+/* Keep scrolling inside the rounded modal shell. */
+dialog{width:720px;padding:0;overflow:hidden;border-radius:20px}
+.dialog-content{max-height:calc(100dvh - 40px);overflow-y:auto;overscroll-behavior:contain;padding:38px;scrollbar-width:thin;scrollbar-color:#a2a7a8 transparent}
+.dialog-content::-webkit-scrollbar{width:8px}
+.dialog-content::-webkit-scrollbar-thumb{background:#a2a7a8;border-radius:8px;border:2px solid white}
+.dialog-content::-webkit-scrollbar-track{background:transparent}
+.dialog-close{z-index:2}
+@media(max-width:620px){.dialog-content{padding:38px 23px 28px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
