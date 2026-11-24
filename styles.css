@@ -12,6 +12,11 @@
 @media(max-width:1150px){.header .brand img{width:190px}}
 @media(max-width:620px){.header .brand img,.footer .brand img{width:180px}}
 .consultation-action{display:flex;align-items:center;justify-content:center}
+.engineer-consultation{width:100%;max-width:360px;justify-self:center;display:flex;flex-direction:column;gap:18px}
+.engineer-portrait{margin:0}
+.engineer-portrait img{width:100%;height:auto;aspect-ratio:1;object-fit:cover;object-position:center 22%;border-radius:14px}
+.engineer-portrait figcaption{margin-top:9px;font-size:14px;line-height:1.4;color:var(--muted)}
+.engineer-consultation .button{width:100%}
 .consultation-action .button{max-width:100%}
 .header-cta,.consultation-action .button,#mobile-nav .button,.hero-actions .button,.mobile-cta .button{justify-content:center;text-align:center}
 body{font-family:'PT Sans',Arial,sans-serif;font-size:18px}
