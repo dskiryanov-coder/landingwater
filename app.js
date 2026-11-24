@@ -70,8 +70,6 @@ function renderForm(container, key) {
   formCleanups.delete(container);
 }
 
-for (const slot of document.querySelectorAll('[data-form-slot]')) renderForm(slot, slot.dataset.formSlot);
-
 const dialog = document.querySelector('#consultation-dialog');
 const dialogForm = document.querySelector('#dialog-form');
 let opener;

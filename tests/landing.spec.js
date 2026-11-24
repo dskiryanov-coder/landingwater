@@ -92,17 +92,23 @@ test('modal traps keyboard focus and closes using its close button', async ({ pa
   await expect(page.locator('[data-form="uv"]')).toBeFocused();
 });
 
-test('general CRM form loads in both page slots and reopens without duplicates', async ({ page }) => {
+test('page hides forms until a consultation button is clicked and reopens without duplicates', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#selection .crm-test-form')).toHaveCount(1);
-  await expect(page.locator('#contacts .crm-test-form')).toHaveCount(1);
+  await expect(page.locator('form')).toHaveCount(0);
+  await expect(page.locator('script[data-b24-form]')).toHaveCount(0);
+  for (const section of ['#selection', '#contacts']) {
+    await page.locator(section).getByRole('button', { name: 'Консультация инженера' }).click();
+    await expect(page.getByRole('dialog').locator('.crm-test-form')).toHaveCount(1);
+    await expect(page.locator(`${section} form`)).toHaveCount(0);
+    await page.keyboard.press('Escape');
+  }
   await page.locator('.hero [data-form]').click();
   await expect(page.getByRole('dialog').locator('.crm-test-form')).toHaveCount(1);
   await page.keyboard.press('Escape');
   await page.locator('.hero [data-form]').click();
   await expect(page.getByRole('dialog').locator('.crm-test-form')).toHaveCount(1);
   await expect(page.getByRole('dialog').locator('.demo-form')).toHaveCount(0);
-  expect(await page.locator('script[data-b24-form]').evaluateAll(scripts => new Set(scripts.map(script => script.dataset.b24Id)).size)).toBe(3);
+  expect(await page.locator('script[data-b24-form]').evaluateAll(scripts => new Set(scripts.map(script => script.dataset.b24Id)).size)).toBe(1);
 });
 
 test('configured CRM form keeps a direct link available if its loader fails', async ({ page }) => {
@@ -112,7 +118,9 @@ test('configured CRM form keeps a direct link available if its loader fails', as
   }));
   await page.route('https://forms.example.invalid/**', route => route.abort());
   await page.goto('/');
-  await expect(page.locator('#selection').getByRole('link', { name: 'Открыть форму в отдельной вкладке' })).toHaveAttribute('href', 'https://forms.example.invalid/form/');
+  await page.locator('#selection').getByRole('button', { name: 'Консультация инженера' }).click();
+  await expect(page.getByRole('dialog').getByRole('link', { name: 'Открыть форму в отдельной вкладке' })).toHaveAttribute('href', 'https://forms.example.invalid/form/');
+  await page.keyboard.press('Escape');
   await page.locator('.hero [data-form]').click();
   await expect(page.getByRole('dialog').getByRole('link', { name: 'Открыть форму в отдельной вкладке' })).toBeVisible();
 });
