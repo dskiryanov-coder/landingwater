@@ -7,7 +7,7 @@ for (const system of systems) {
   const card = document.createElement('article');
   card.className = 'system-card';
   card.id = `system-${system.id}`;
-  card.innerHTML = `<div class="system-image"><img src="assets/equipment.svg#${system.image}" alt="Условная иллюстрация оборудования: ${system.name}" width="400" height="225" loading="lazy"><span class="system-index">${system.number} /</span><span class="system-tag">${system.tag}</span></div><div class="system-card-body"><h3>${system.name}</h3><p class="system-description">${system.description}</p><div class="system-bottom"><div><p class="price-label">Оборудование</p><p class="system-price"><small>от</small> ${money.format(system.price)} ₽</p></div><button class="button button-outline" data-form="${system.id}" aria-label="Уточнить у инженера: ${system.name}">Уточнить у инженера <span aria-hidden="true">↗</span></button></div></div>`;
+  card.innerHTML = `<div class="system-image"><img src="assets/equipment.svg#${system.image}" alt="Условная иллюстрация оборудования: ${system.name}" width="400" height="225" loading="lazy"><span class="system-index">${system.number} /</span><span class="system-tag">${system.tag}</span></div><div class="system-card-body"><h3>${system.name}</h3><p class="system-description">${system.description}</p><div class="system-bottom"><div><p class="price-label">Оборудование</p><p class="system-price"><small>от</small> ${money.format(system.price)} ₽</p></div><button class="button button-outline" data-form="${system.id}" aria-label="Подобрать оборудование: ${system.name}">Подобрать оборудование <span aria-hidden="true">↗</span></button></div></div>`;
   grid.append(card);
 }
 
