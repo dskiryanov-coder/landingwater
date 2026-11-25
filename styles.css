@@ -28,7 +28,7 @@ h1,h2,h3,.hero h1,.button,.text-link,.problem-solution,.system-price,.form-title
 .header-cta{gap:12px}
 .visual-label{right:20px}
 .illustration-note{line-height:1.4;bottom:12px}
-.visual-caption{bottom:75px}
+.visual-caption{bottom:55px}
 .service-strip>div{padding-inline:16px}
 .service-strip>div:first-child{padding-left:0}
 .system-description{min-height:84px}
@@ -39,7 +39,7 @@ h1,h2,h3,.hero h1,.button,.text-link,.problem-solution,.system-price,.form-title
 .problem-solution{hyphens:auto;overflow-wrap:anywhere}
 @media(min-width:901px) and (max-width:1150px){.desktop-nav{gap:14px}.header-cta{max-width:230px;padding-inline:12px}.header-inner{gap:16px}}
 @media(max-width:900px){.service-strip{gap:14px}.service-strip>div{align-items:flex-start;padding-inline:8px}.hero-visual{height:530px}.hero-equipment{height:420px}.hero-assurance{font-size:14px}.system-description{min-height:0}}
-@media(max-width:620px){.hero-actions{gap:12px 20px}.hero-visual{height:430px}.hero-equipment{height:335px;margin-top:20px}.visual-caption{bottom:78px;gap:10px}.visual-caption div>span{font-size:14px}.visual-label{font-size:14px}.illustration-note{font-size:14px;bottom:14px}.service-strip{gap:0}.service-strip>div{padding-inline:0;align-items:center}.service-strip p br{display:block}.service-strip strong{margin-left:0}.system-bottom{display:block}.system-card .button{margin-top:16px;font-size:16px}.hero-actions .button,.hero-actions .text-link{font-size:16px}.problem-card p br{display:none}.footer-inner p{margin-left:0}.footer-inner{font-size:14px}.footer-inner .brand{width:100%}.footer-inner p{text-align:left;width:100%}.step p{font-size:16px}}
+@media(max-width:620px){.hero-actions{gap:12px 20px}.hero-visual{height:430px}.hero-equipment{height:335px;margin-top:20px}.visual-caption{bottom:58px;gap:10px}.visual-caption div>span{font-size:14px}.visual-label{font-size:14px}.illustration-note{font-size:14px;bottom:14px}.service-strip{gap:0}.service-strip>div{padding-inline:0;align-items:center}.service-strip p br{display:block}.service-strip strong{margin-left:0}.system-bottom{display:block}.system-card .button{margin-top:16px;font-size:16px}.hero-actions .button,.hero-actions .text-link{font-size:16px}.problem-card p br{display:none}.footer-inner p{margin-left:0}.footer-inner{font-size:14px}.footer-inner .brand{width:100%}.footer-inner p{text-align:left;width:100%}.step p{font-size:16px}}
 @media(max-width:900px){.problems-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.step p{font-size:18px}}
 @media(max-width:480px){.steps-grid{grid-template-columns:1fr}.step h3 br{display:none}.step-number{margin-bottom:14px}}
