@@ -77,8 +77,8 @@
   <g data-component="column-1" transform="translate(250 130) scale(.72)"><use xlink:href="#column"/></g>
   <g data-component="column-2" transform="translate(416 130) scale(.72)"><use xlink:href="#column"/></g>
   <g data-component="bb-housing" transform="translate(570 83.14) scale(.78)"><use xlink:href="#prefilter"/></g>
-  <path d="M438 115v13C496 172 506 226 557 270" stroke="#566f6a" stroke-width="4"/><rect x="434" y="113" width="8" height="13" rx="2" fill="#344d54"/>
-  <g data-component="salt-tank" transform="translate(575 270) scale(.6)"><use xlink:href="#salt"/></g>
+  <path d="M438 115v13C496 172 506 247 557 291.4" stroke="#566f6a" stroke-width="4"/><rect x="434" y="113" width="8" height="13" rx="2" fill="#344d54"/>
+  <g data-component="salt-tank" transform="translate(575 291.4) scale(.6)"><use xlink:href="#salt"/></g>
   <path d="M153 112h20M326 112h20M479 112h20" stroke="#e74645" stroke-width="9"/>
   <path d="m164 106 7 6-7 6m173-12 7 6-7 6m153-12 7 6-7 6" stroke="#b32b2c" stroke-width="2"/>
 </g>
